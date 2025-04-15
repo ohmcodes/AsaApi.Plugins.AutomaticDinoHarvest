@@ -94,11 +94,10 @@ int GetAttackIndex(FString* param, APrimalDinoCharacter* dino)
 	}
 
 	nlohmann::json listedDinos = AutomaticDinoHarvest::config["General"]["DinoAttackIndex"].get<nlohmann::json>();
-	//
 
 	if (!listedDinos.is_null())
 	{
-		Log::GetLog()->info("listedDinos {}", to_string(listedDinos));
+		//Log::GetLog()->info("listedDinos {}", to_string(listedDinos));
 
 		std::vector<int> attackIndexes;
 
@@ -108,27 +107,28 @@ int GetAttackIndex(FString* param, APrimalDinoCharacter* dino)
 			{
 				attackIndexes = (it.value()).get<std::vector<int>>();
 
-				Log::GetLog()->info("attackIndexes {}", attackIndexes.size());
+				//Log::GetLog()->info("attackIndexes {}", attackIndexes.size());
 				break;
 			}
 		}
 
 		if (attackIndexes.size() > 0)
 		{
-			Log::GetLog()->info("has attackIndexes {}", attackIndexes.size());
+			//Log::GetLog()->info("has attackIndexes {}", attackIndexes.size());
 
+			bool isParamValid = false;
 			for (int ai : attackIndexes)
 			{
 				// valid to config list
 				if (paramAttackIndex == ai)
 				{
-					Log::GetLog()->info("paramAttackIndex {}", paramAttackIndex);
+					isParamValid = true;
 					break;
 				}
 			}
 			// not valid set default 0
-			Log::GetLog()->info("not valid {}", paramAttackIndex);
-			paramAttackIndex = 0;
+			//Log::GetLog()->info("not valid {}", paramAttackIndex);
+			paramAttackIndex = isParamValid ? paramAttackIndex : 0;
 		}
 
 	}
@@ -139,7 +139,7 @@ int GetAttackIndex(FString* param, APrimalDinoCharacter* dino)
 	{
 		if (paramAttackIndex == i)
 		{
-			Log::GetLog()->info("dino attackindex {} paramAttackIndex {}", i, paramAttackIndex);
+			//Log::GetLog()->info("dino attackindex {} paramAttackIndex {}", i, paramAttackIndex);
 			return paramAttackIndex;
 		}
 	}
@@ -207,9 +207,6 @@ void AddHarvester(AShooterPlayerController* pc, APrimalDinoCharacter* dino, FStr
 	TArray<HarvesterData>& harvesterData = GetHarvestingDino(pc);
 
 	harvesterData.Add(harvester);
-
-	Log::GetLog()->warn("harvesterData {}", harvesterData.Num());
-
 }
 
 
