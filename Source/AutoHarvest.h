@@ -94,10 +94,12 @@ int GetAttackIndex(FString* param, APrimalDinoCharacter* dino)
 	}
 
 	nlohmann::json listedDinos = AutomaticDinoHarvest::config["General"]["DinoAttackIndex"].get<nlohmann::json>();
-	//Log::GetLog()->info("{}", to_string(listedDinos));
+	//
 
 	if (!listedDinos.is_null())
 	{
+		Log::GetLog()->info("listedDinos {}", to_string(listedDinos));
+
 		std::vector<int> attackIndexes;
 
 		for (auto it = listedDinos.begin(); it != listedDinos.end(); ++it)
@@ -105,21 +107,27 @@ int GetAttackIndex(FString* param, APrimalDinoCharacter* dino)
 			if (dino->DescriptiveNameField().Contains(FString(it.key().c_str())))
 			{
 				attackIndexes = (it.value()).get<std::vector<int>>();
+
+				Log::GetLog()->info("attackIndexes {}", attackIndexes.size());
 				break;
 			}
 		}
 
 		if (attackIndexes.size() > 0)
 		{
+			Log::GetLog()->info("has attackIndexes {}", attackIndexes.size());
+
 			for (int ai : attackIndexes)
 			{
 				// valid to config list
 				if (paramAttackIndex == ai)
 				{
+					Log::GetLog()->info("paramAttackIndex {}", paramAttackIndex);
 					break;
 				}
 			}
 			// not valid set default 0
+			Log::GetLog()->info("not valid {}", paramAttackIndex);
 			paramAttackIndex = 0;
 		}
 
@@ -131,6 +139,7 @@ int GetAttackIndex(FString* param, APrimalDinoCharacter* dino)
 	{
 		if (paramAttackIndex == i)
 		{
+			Log::GetLog()->info("dino attackindex {} paramAttackIndex {}", i, paramAttackIndex);
 			return paramAttackIndex;
 		}
 	}
