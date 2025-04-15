@@ -398,6 +398,8 @@ bool DoHarvestAttack()
 
 		if (!dino)
 		{
+			Log::GetLog()->warn("invalid dino");
+
 			forDeleteTribe.Add(harvester);
 			continue;
 		}
@@ -412,12 +414,14 @@ bool DoHarvestAttack()
 
 		if (dino->TargetingTeamField() != harvester.TribeID)
 		{
+			Log::GetLog()->warn("not tribe dino");
 			forDeleteTribe.Add(harvester);
 			continue;
 		}
 
 		if (dino->AttackInfosField().Num() - 1 < harvester.AttackIndex)
 		{
+			Log::GetLog()->warn("AttackInfosField {}", dino->AttackInfosField().Num());
 			forDeleteTribe.Add(harvester);
 			continue;
 		}
