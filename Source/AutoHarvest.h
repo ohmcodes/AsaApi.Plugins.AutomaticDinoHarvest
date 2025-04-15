@@ -94,33 +94,38 @@ int GetAttackIndex(FString* param, APrimalDinoCharacter* dino)
 	}
 
 	nlohmann::json listedDinos = AutomaticDinoHarvest::config["General"]["DinoAttackIndex"].get<nlohmann::json>();
-	Log::GetLog()->info("{}", to_string(listedDinos));
+	//Log::GetLog()->info("{}", to_string(listedDinos));
 
-	std::vector<int> attackIndexes;
-
-	for (auto it = listedDinos.begin(); it != listedDinos.end(); ++it)
+	if (listedDinos)
 	{
-		if (dino->DescriptiveNameField().Contains(FString(it.key().c_str())))
-		{
-			attackIndexes = (it.value()).get<std::vector<int>>();
-			break;
-		}
-	}
+		std::vector<int> attackIndexes;
 
-	if (attackIndexes.size() > 0)
-	{
-		for (int ai : attackIndexes)
+		for (auto it = listedDinos.begin(); it != listedDinos.end(); ++it)
 		{
-			// valid to config list
-			if (paramAttackIndex == ai)
+			if (dino->DescriptiveNameField().Contains(FString(it.key().c_str())))
 			{
+				attackIndexes = (it.value()).get<std::vector<int>>();
 				break;
 			}
 		}
-		// not valid set default 0
-		paramAttackIndex = 0;
+
+		if (attackIndexes.size() > 0)
+		{
+			for (int ai : attackIndexes)
+			{
+				// valid to config list
+				if (paramAttackIndex == ai)
+				{
+					break;
+				}
+			}
+			// not valid set default 0
+			paramAttackIndex = 0;
+		}
+
 	}
 
+	
 	// Do dino check
 	for (int i = 0; i < dino->AttackInfosField().Num(); i++)
 	{
