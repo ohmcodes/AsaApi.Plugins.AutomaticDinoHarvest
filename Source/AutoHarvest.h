@@ -149,7 +149,6 @@ int GetAttackIndex(FString* param, APrimalDinoCharacter* dino)
 
 }
 
-
 HarvesterData* FindHarvester(AShooterPlayerController* pc, APrimalDinoCharacter* dino)
 {
 	unsigned int DinoID1 = dino->DinoID1Field();
@@ -370,6 +369,8 @@ void StopAllHarvesterCallBack(AShooterPlayerController* pc, FString* param, int,
 	Log::GetLog()->warn("Function: {}", __FUNCTION__);
 
 	RemoveAllHarvestingDinosByTribeID(pc);
+
+	AsaApi::GetApiUtils().SendNotification(pc, FColorList::Orange, 1.3f, 15.0f, nullptr, "All Harvesting dinos has been stopped.");
 }
 
 void GetAllHarvestingDinosCallBack(AShooterPlayerController* pc, FString* param, int, int)
@@ -385,7 +386,7 @@ void AdminStopAllHarvestCallBack(AShooterPlayerController* pc, FString* param, i
 
 	AutomaticDinoHarvest::personalHarvestingDinos.Empty();
 
-	AsaApi::GetApiUtils().SendNotification(pc, FColorList::Orange, 1.3f, 15.0f, nullptr, "All Harvesting dinos has been stoped.");
+	AsaApi::GetApiUtils().SendNotification(pc, FColorList::Orange, 1.3f, 15.0f, nullptr, "All Harvesting dinos has been stopped.");
 }
 
 void AdminGetAllHarvestingDinosCallBack(AShooterPlayerController* pc, FString* param, int, int)
