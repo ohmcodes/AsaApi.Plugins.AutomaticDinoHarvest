@@ -232,7 +232,7 @@ void RemoveHarvesterByObject(HarvesterData hdino, TArray<HarvesterData> harveste
 	);
 }
 
-bool RemoveHarvesterByDino(APrimalDinoCharacter* dino, TArray<HarvesterData> harvester_list)
+bool RemoveHarvesterByDino(APrimalDinoCharacter* dino, TArray<HarvesterData>& harvester_list)
 {
 	int32 removedDino = harvester_list.RemoveAll([dino](const HarvesterData& harvester)
 		{
@@ -345,7 +345,7 @@ void RemoveHarvesterCallBack(AShooterPlayerController* pc, FString* param, int, 
 
 	if (!dino) return;
 
-	TArray<HarvesterData> harvester_list = GetHarvestingDino(pc);
+	TArray<HarvesterData>& harvester_list = GetHarvestingDino(pc);
 
 	if (RemoveHarvesterByDino(dino, harvester_list))
 	{
