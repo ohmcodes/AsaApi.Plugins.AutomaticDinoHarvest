@@ -383,6 +383,8 @@ void AdminGetAllHarvestingDinosCallBack(AShooterPlayerController* player_control
 // Function
 bool DoHarvestAttack()
 {
+	Log::GetLog()->warn("Function: {}", __FUNCTION__);
+
 	int harvestingDinoTribe = 0;
 	int harvestingDinoPersonal = 0;
 	TArray<HarvesterData> forDeleteTribe;
