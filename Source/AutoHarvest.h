@@ -20,7 +20,7 @@ AActor* GetTargetActor(AShooterPlayerController* pc)
 }
 
 
-TArray<HarvesterData> GetHarvestingDino(AShooterPlayerController* pc)
+TArray<HarvesterData>& GetHarvestingDino(AShooterPlayerController* pc)
 {
 	if (pc->IsInTribe())
 	{
@@ -204,9 +204,12 @@ void AddHarvester(AShooterPlayerController* pc, APrimalDinoCharacter* dino, FStr
 	harvester.EosID = pc->GetEOSId();
 	harvester.Resources = resources;
 	
-	TArray<HarvesterData> harvesterData = GetHarvestingDino(pc);
+	TArray<HarvesterData>& harvesterData = GetHarvestingDino(pc);
 
 	harvesterData.Add(harvester);
+
+	Log::GetLog()->warn("harvesterData {}", harvesterData.Num());
+
 }
 
 
