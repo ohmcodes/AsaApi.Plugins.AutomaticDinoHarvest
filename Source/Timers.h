@@ -1,26 +1,12 @@
 
 void TimerCallback()
 {
-	// sample broadcast every 20secs
-	if (AutomaticDinoHarvest::counter == 20)
+	int interval = AutomaticDinoHarvest::config["General"].value("AutoHarvestInterval", 1);
+
+	if (AutomaticDinoHarvest::counter % interval == 0)
 	{
-		Log::GetLog()->info("Server is up!");
-
-		const FString msg = FString("Welcome to the server");
-		AsaApi::GetApiUtils().GetCheatManager()->Broadcast(&msg);
+		DoHarvestAttack();
 	}
-
-	// sample notif every 50secs
-	if (AutomaticDinoHarvest::counter == 50)
-	{
-		AsaApi::GetApiUtils().SendNotificationToAll(FColorList::Blue, 1.3f, 15.0f, nullptr, "Hooray Welcome to the server! enjoy!");
-	}
-
-	if (AutomaticDinoHarvest::counter % 5 == 0)
-	{
-		FetchMessageFromDiscord();
-	}
-
 
 	AutomaticDinoHarvest::counter++;
 }

@@ -2,143 +2,6 @@
 #include <fstream>
 
 
-static bool startsWith(const std::string& str, const std::string& prefix)
-{
-	return str.size() >= prefix.size() && str.compare(0, prefix.size(), prefix) == 0;
-}
-
-void FetchMessageFromDiscordCallback(bool success, std::string results)
-{
-	//Log::GetLog()->warn("Function: {}", __FUNCTION__);
-
-	if (success)
-	{
-		if(results.empty()) return;
-
-		try
-		{
-			nlohmann::json resObj = nlohmann::json::parse(results)[0];
-
-			if (resObj.is_null())
-			{
-				Log::GetLog()->warn("resObj is null");
-				return;
-			}
-
-			auto globalName = resObj["author"]["global_name"];
-
-			// if not sent by bot
-			if (resObj.contains("bot") && globalName.is_null())
-			{
-				Log::GetLog()->warn("the sender is bot");
-				return;
-			}
-
-			std::string msg = resObj["content"].get<std::string>();
-			
-			if (!startsWith(msg, "!"))
-			{
-				Log::GetLog()->warn("message not startswith !");
-				return;
-			}
-
-			if (AutomaticDinoHarvest::lastMessageID == resObj["id"].get<std::string>()) return;
-			
-			std::string sender = fmt::format("Discord: {}", globalName.get<std::string>());
-
-			AsaApi::GetApiUtils().SendChatMessageToAll(FString(sender), msg.c_str());
-
-			AutomaticDinoHarvest::lastMessageID = resObj["id"].get<std::string>();
-		}
-		catch (std::exception& error)
-		{
-			Log::GetLog()->error("Error parsing JSON results. Error: {}",error.what());
-		}
-	}
-	else
-	{
-		Log::GetLog()->warn("Failed to fetch messages. success: {}", success);
-	}
-}
-
-void FetchMessageFromDiscord()
-{
-	//Log::GetLog()->warn("Function: {}", __FUNCTION__);
-
-	std::string botToken = AutomaticDinoHarvest::config["DiscordBot"].value("BotToken","");
-
-	std::string channelID = AutomaticDinoHarvest::config["DiscordBot"].value("ChannelID", "");
-
-	std::string apiURL = FString::Format("https://discord.com/api/v10/channels/{}/messages?limit=1", channelID).ToString();
-
-	std::vector<std::string> headers = {
-		"Content-Type: application/json",
-		"User-Agent: AutomaticDinoHarvest/1.0",
-		"Connection: keep-alive",
-		"Accept: */*",
-		"Content-Length: 0",
-		"Authorization: Bot " + botToken
-	};
-
-	try
-	{
-		bool req = AutomaticDinoHarvest::req.CreateGetRequest(apiURL, FetchMessageFromDiscordCallback, headers);
-
-		if (!req)
-			Log::GetLog()->error("Failed to perform Get request. req = {}", req);
-	}
-	catch (const std::exception& error)
-	{
-		Log::GetLog()->error("Failed to perform Get request. Error: {}", error.what());
-	}
-}
-
-void SendMessageToDiscordCallback(bool success, std::string results, std::unordered_map<std::string, std::string> responseHeaders)
-{
-	if (!success)
-	{
-		Log::GetLog()->error("Failed to send Post request. {} {} {}", __FUNCTION__, success, results);
-	}
-	else
-	{
-		Log::GetLog()->info("Success. {} {} {}", __FUNCTION__, success, results);
-	}
-}
-
-void SendMessageToDiscord(std::string msg)
-{
-
-	Log::GetLog()->warn("Function: {}", __FUNCTION__);
-
-	
-	std::string webhook = AutomaticDinoHarvest::config["DiscordBot"].value("Webhook", "");
-	std::string botImgUrl = AutomaticDinoHarvest::config["DiscordBot"].value("BotImageURL", "");
-
-	if (webhook == "" || webhook.empty()) return;
-
-	FString msgFormat = L"{{\"content\":\"{}\",\"username\":\"{}\",\"avatar_url\":\"{}\"}}";
-
-	FString msgOutput = FString::Format(*msgFormat, msg, "ArkBot", botImgUrl);
-
-	std::vector<std::string> headers = {
-		"Content-Type: application/json",
-		"User-Agent: AutomaticDinoHarvest/1.0",
-		"Connection: keep-alive",
-		"Accept: */*"
-	};
-
-	try
-	{
-		bool req = AutomaticDinoHarvest::req.CreatePostRequest(webhook, SendMessageToDiscordCallback, msgOutput.ToStringUTF8(), "application/json", headers);
-
-		if(!req)
-			Log::GetLog()->error("Failed to send Post request. req = {}", req);
-	}
-	catch (const std::exception& error)
-	{
-		Log::GetLog()->error("Failed to send Post request. Error: {}", error.what());
-	}
-}
 
 bool Points(FString eos_id, int cost, bool check_points = false)
 {
@@ -423,8 +286,8 @@ void ReadConfig()
 
 void LoadDatabase()
 {
-	Log::GetLog()->warn("LoadDatabase");
-	AutomaticDinoHarvest::pluginTemplateDB = DatabaseFactory::createConnector(AutomaticDinoHarvest::config["PluginDBSettings"]);
+	//Log::GetLog()->warn("LoadDatabase");
+	//AutomaticDinoHarvest::pluginTemplateDB = DatabaseFactory::createConnector(AutomaticDinoHarvest::config["PluginDBSettings"]);
 
 	nlohmann::ordered_json tableDefinition = {};
 	if (AutomaticDinoHarvest::config["PluginDBSettings"].value("UseMySQL", true) == true)
@@ -450,7 +313,7 @@ void LoadDatabase()
 		};
 	}
 
-	AutomaticDinoHarvest::pluginTemplateDB->createTableIfNotExist(AutomaticDinoHarvest::config["PluginDBSettings"].value("TableName", ""), tableDefinition);
+	//AutomaticDinoHarvest::pluginTemplateDB->createTableIfNotExist(AutomaticDinoHarvest::config["PluginDBSettings"].value("TableName", ""), tableDefinition);
 
 
 	// PermissionsDB

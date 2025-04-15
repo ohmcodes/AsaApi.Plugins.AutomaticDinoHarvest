@@ -21,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Includes\sqlite3\sqlite3.h" />
+    <ClInclude Include="Source\AutoHarvest.h" />
     <ClInclude Include="Source\Commands.h" />
     <ClInclude Include="Source\Hooks.h" />
     <ClInclude Include="Source\Public\Database\DatabaseFactory.h" />
@@ -30,6 +31,7 @@
     <ClInclude Include="Source\Public\AutomaticDinoHarvest.h" />
     <ClInclude Include="Source\Reload.h" />
     <ClInclude Include="Source\RepairItems.h" />
+    <ClInclude Include="Source\Structs.h" />
     <ClInclude Include="Source\Timers.h" />
     <ClInclude Include="Source\Utils.h" />
   </ItemGroup>

@@ -92,5 +92,11 @@
     <ClInclude Include="Includes\sqlite3\sqlite3.h">
       <Filter>Header Files\Public\Database</Filter>
     </ClInclude>
+    <ClInclude Include="Source\AutoHarvest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

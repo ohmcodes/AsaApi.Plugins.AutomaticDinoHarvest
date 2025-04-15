@@ -2,29 +2,87 @@
 
 void AddOrRemoveCommands(bool addCmd = true)
 {
-	const FString RepairItems = AutomaticDinoHarvest::config["Commands"]["RepairItemCMD"].get<std::string>().c_str();
-	if (!RepairItems.IsEmpty())
+
+	// Owner
+
+	const FString AddHarvester = AutomaticDinoHarvest::config["Commands"]["AddHarvesterCMD"].get<std::string>().c_str();
+	if (!AddHarvester.IsEmpty())
 	{
 		if (addCmd)
 		{
-			AsaApi::GetCommands().AddChatCommand(RepairItems, &RepairItemsCallback);
+			AsaApi::GetCommands().AddChatCommand(AddHarvester, &AddHarvesterCallBack);
 		}
 		else
 		{
-			AsaApi::GetCommands().RemoveChatCommand(RepairItems);
+			AsaApi::GetCommands().RemoveChatCommand(AddHarvester);
 		}
 	}
 
-	const FString DeletePlayer = AutomaticDinoHarvest::config["Commands"]["DeletePlayerCMD"].get<std::string>().c_str();
-	if (!DeletePlayer.IsEmpty())
+	const FString RemoveHarvester = AutomaticDinoHarvest::config["Commands"]["RemoveHarvesterCMD"].get<std::string>().c_str();
+	if (!RemoveHarvester.IsEmpty())
 	{
 		if (addCmd)
 		{
-			AsaApi::GetCommands().AddChatCommand(DeletePlayer, &DeletePlayerCallback);
+			AsaApi::GetCommands().AddChatCommand(RemoveHarvester, &RemoveHarvesterCallBack);
 		}
 		else
 		{
-			AsaApi::GetCommands().RemoveChatCommand(DeletePlayer);
+			AsaApi::GetCommands().RemoveChatCommand(RemoveHarvester);
+		}
+	}
+
+	const FString StopAllHarvester = AutomaticDinoHarvest::config["Commands"]["StopAllHarvesterCMD"].get<std::string>().c_str();
+	if (!StopAllHarvester.IsEmpty())
+	{
+		if (addCmd)
+		{
+			AsaApi::GetCommands().AddChatCommand(StopAllHarvester, &StopAllHarvesterCallBack);
+		}
+		else
+		{
+			AsaApi::GetCommands().RemoveChatCommand(StopAllHarvester);
+		}
+	}
+
+	const FString GetAllHarvestingDinos = AutomaticDinoHarvest::config["Commands"]["GetAllHarvestingDinosCMD"].get<std::string>().c_str();
+	if (!GetAllHarvestingDinos.IsEmpty())
+	{
+		if (addCmd)
+		{
+			AsaApi::GetCommands().AddChatCommand(GetAllHarvestingDinos, &GetAllHarvestingDinosCallBack);
+		}
+		else
+		{
+			AsaApi::GetCommands().RemoveChatCommand(GetAllHarvestingDinos);
+		}
+	}
+
+	
+	// Admin
+
+	const FString AdminSAH = AutomaticDinoHarvest::config["Commands"]["AdminSAHCMD"].get<std::string>().c_str();
+	if (!AdminSAH.IsEmpty())
+	{
+		if (addCmd)
+		{
+			AsaApi::GetCommands().AddChatCommand(AdminSAH, &AdminStopAllHarvestCallBack);
+		}
+		else
+		{
+			AsaApi::GetCommands().RemoveChatCommand(AdminSAH);
+		}
+	}
+
+	const FString AdminGAHD = AutomaticDinoHarvest::config["Commands"]["AdminGAHDCMD"].get<std::string>().c_str();
+	if (!AdminGAHD.IsEmpty())
+	{
+		if (addCmd)
+		{
+			AsaApi::GetCommands().AddChatCommand(AdminGAHD, &AdminGetAllHarvestingDinosCallBack);
+		}
+		else
+		{
+			AsaApi::GetCommands().RemoveChatCommand(AdminGAHD);
 		}
 	}
 }
