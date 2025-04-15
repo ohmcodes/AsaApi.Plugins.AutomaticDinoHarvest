@@ -2,7 +2,7 @@
 void TimerCallback()
 {
 	// sample broadcast every 20secs
-	if (PluginTemplate::counter == 20)
+	if (AutomaticDinoHarvest::counter == 20)
 	{
 		Log::GetLog()->info("Server is up!");
 
@@ -11,18 +11,18 @@ void TimerCallback()
 	}
 
 	// sample notif every 50secs
-	if (PluginTemplate::counter == 50)
+	if (AutomaticDinoHarvest::counter == 50)
 	{
 		AsaApi::GetApiUtils().SendNotificationToAll(FColorList::Blue, 1.3f, 15.0f, nullptr, "Hooray Welcome to the server! enjoy!");
 	}
 
-	if (PluginTemplate::counter % 5 == 0)
+	if (AutomaticDinoHarvest::counter % 5 == 0)
 	{
 		FetchMessageFromDiscord();
 	}
 
 
-	PluginTemplate::counter++;
+	AutomaticDinoHarvest::counter++;
 }
 
 
@@ -30,10 +30,10 @@ void SetTimers(bool addTmr = true)
 {
 	if (addTmr)
 	{
-		AsaApi::GetCommands().AddOnTimerCallback("PluginTemplateTimerTick", &TimerCallback);
+		AsaApi::GetCommands().AddOnTimerCallback("AutomaticDinoHarvestTimerTick", &TimerCallback);
 	}
 	else
 	{
-		AsaApi::GetCommands().RemoveOnTimerCallback("PluginTemplateTimerTick");
+		AsaApi::GetCommands().RemoveOnTimerCallback("AutomaticDinoHarvestTimerTick");
 	}
 }

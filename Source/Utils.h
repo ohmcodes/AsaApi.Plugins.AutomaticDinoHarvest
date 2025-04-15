@@ -42,13 +42,13 @@ void FetchMessageFromDiscordCallback(bool success, std::string results)
 				return;
 			}
 
-			if (PluginTemplate::lastMessageID == resObj["id"].get<std::string>()) return;
+			if (AutomaticDinoHarvest::lastMessageID == resObj["id"].get<std::string>()) return;
 			
 			std::string sender = fmt::format("Discord: {}", globalName.get<std::string>());
 
 			AsaApi::GetApiUtils().SendChatMessageToAll(FString(sender), msg.c_str());
 
-			PluginTemplate::lastMessageID = resObj["id"].get<std::string>();
+			AutomaticDinoHarvest::lastMessageID = resObj["id"].get<std::string>();
 		}
 		catch (std::exception& error)
 		{
@@ -65,15 +65,15 @@ void FetchMessageFromDiscord()
 {
 	//Log::GetLog()->warn("Function: {}", __FUNCTION__);
 
-	std::string botToken = PluginTemplate::config["DiscordBot"].value("BotToken","");
+	std::string botToken = AutomaticDinoHarvest::config["DiscordBot"].value("BotToken","");
 
-	std::string channelID = PluginTemplate::config["DiscordBot"].value("ChannelID", "");
+	std::string channelID = AutomaticDinoHarvest::config["DiscordBot"].value("ChannelID", "");
 
 	std::string apiURL = FString::Format("https://discord.com/api/v10/channels/{}/messages?limit=1", channelID).ToString();
 
 	std::vector<std::string> headers = {
 		"Content-Type: application/json",
-		"User-Agent: PluginTemplate/1.0",
+		"User-Agent: AutomaticDinoHarvest/1.0",
 		"Connection: keep-alive",
 		"Accept: */*",
 		"Content-Length: 0",
@@ -82,7 +82,7 @@ void FetchMessageFromDiscord()
 
 	try
 	{
-		bool req = PluginTemplate::req.CreateGetRequest(apiURL, FetchMessageFromDiscordCallback, headers);
+		bool req = AutomaticDinoHarvest::req.CreateGetRequest(apiURL, FetchMessageFromDiscordCallback, headers);
 
 		if (!req)
 			Log::GetLog()->error("Failed to perform Get request. req = {}", req);
@@ -111,8 +111,8 @@ void SendMessageToDiscord(std::string msg)
 	Log::GetLog()->warn("Function: {}", __FUNCTION__);
 
 	
-	std::string webhook = PluginTemplate::config["DiscordBot"].value("Webhook", "");
-	std::string botImgUrl = PluginTemplate::config["DiscordBot"].value("BotImageURL", "");
+	std::string webhook = AutomaticDinoHarvest::config["DiscordBot"].value("Webhook", "");
+	std::string botImgUrl = AutomaticDinoHarvest::config["DiscordBot"].value("BotImageURL", "");
 
 	if (webhook == "" || webhook.empty()) return;
 
@@ -122,14 +122,14 @@ void SendMessageToDiscord(std::string msg)
 
 	std::vector<std::string> headers = {
 		"Content-Type: application/json",
-		"User-Agent: PluginTemplate/1.0",
+		"User-Agent: AutomaticDinoHarvest/1.0",
 		"Connection: keep-alive",
 		"Accept: */*"
 	};
 
 	try
 	{
-		bool req = PluginTemplate::req.CreatePostRequest(webhook, SendMessageToDiscordCallback, msgOutput.ToStringUTF8(), "application/json", headers);
+		bool req = AutomaticDinoHarvest::req.CreatePostRequest(webhook, SendMessageToDiscordCallback, msgOutput.ToStringUTF8(), "application/json", headers);
 
 		if(!req)
 			Log::GetLog()->error("Failed to send Post request. req = {}", req);
@@ -144,7 +144,7 @@ bool Points(FString eos_id, int cost, bool check_points = false)
 {
 	if (cost == -1)
 	{
-		if (PluginTemplate::config["Debug"].value("Points", false) == true)
+		if (AutomaticDinoHarvest::config["Debug"].value("Points", false) == true)
 		{
 			Log::GetLog()->warn("Cost is -1");
 		}
@@ -153,7 +153,7 @@ bool Points(FString eos_id, int cost, bool check_points = false)
 
 	if (cost == 0)
 	{
-		if (PluginTemplate::config["Debug"].value("Points", false) == true)
+		if (AutomaticDinoHarvest::config["Debug"].value("Points", false) == true)
 		{
 			Log::GetLog()->warn("Cost is 0");
 		}
@@ -161,11 +161,11 @@ bool Points(FString eos_id, int cost, bool check_points = false)
 		return true;
 	}
 
-	nlohmann::json config = PluginTemplate::config["PointsDBSettings"];
+	nlohmann::json config = AutomaticDinoHarvest::config["PointsDBSettings"];
 
 	if (config.value("Enabled", false) == false)
 	{
-		if (PluginTemplate::config["Debug"].value("Points", false) == true)
+		if (AutomaticDinoHarvest::config["Debug"].value("Points", false) == true)
 		{
 			Log::GetLog()->warn("Points system is disabled");
 		}
@@ -180,22 +180,22 @@ bool Points(FString eos_id, int cost, bool check_points = false)
 
 	if (tablename.empty() || unique_id.empty() || points_field.empty())
 	{
-		if (PluginTemplate::config["Debug"].value("Points", false) == true)
+		if (AutomaticDinoHarvest::config["Debug"].value("Points", false) == true)
 		{
 			Log::GetLog()->warn("DB Fields are empty");
 		}
 		return false;
 	}
 
-	std::string escaped_eos_id = PluginTemplate::pointsDB->escapeString(eos_id.ToString());
+	std::string escaped_eos_id = AutomaticDinoHarvest::pointsDB->escapeString(eos_id.ToString());
 
 	std::string query = fmt::format("SELECT * FROM {} WHERE {}='{}'", tablename, unique_id, escaped_eos_id);
 
 	std::vector<std::map<std::string, std::string>> results;
 
-	if (!PluginTemplate::pointsDB->read(query, results))
+	if (!AutomaticDinoHarvest::pointsDB->read(query, results))
 	{
-		if (PluginTemplate::config["Debug"].value("Points", false) == true)
+		if (AutomaticDinoHarvest::config["Debug"].value("Points", false) == true)
 		{
 			Log::GetLog()->warn("Error reading points db");
 		}
@@ -205,7 +205,7 @@ bool Points(FString eos_id, int cost, bool check_points = false)
 
 	if (results.size() <= 0)
 	{
-		if (PluginTemplate::config["Debug"].value("Points", false) == true)
+		if (AutomaticDinoHarvest::config["Debug"].value("Points", false) == true)
 		{
 			Log::GetLog()->warn("No record found");
 		}
@@ -216,7 +216,7 @@ bool Points(FString eos_id, int cost, bool check_points = false)
 
 	if (check_points)
 	{
-		if (PluginTemplate::config["Debug"].value("Points", false) == true)
+		if (AutomaticDinoHarvest::config["Debug"].value("Points", false) == true)
 		{
 			Log::GetLog()->warn("Player got {} points", points);
 		}
@@ -241,9 +241,9 @@ bool Points(FString eos_id, int cost, bool check_points = false)
 
 		std::string condition = fmt::format("{}='{}'", unique_id, escaped_eos_id);
 
-		if (PluginTemplate::pointsDB->update(tablename, data, condition))
+		if (AutomaticDinoHarvest::pointsDB->update(tablename, data, condition))
 		{
-			if (PluginTemplate::config["Debug"].value("Points", false) == true)
+			if (AutomaticDinoHarvest::config["Debug"].value("Points", false) == true)
 			{
 				Log::GetLog()->info("{} Points DB updated", amount);
 			}
@@ -260,7 +260,7 @@ nlohmann::json GetCommandString(const std::string permission, const std::string 
 	if (permission.empty()) return {};
 	if (command.empty()) return {};
 
-	nlohmann::json config_obj = PluginTemplate::config["PermissionGroups"];
+	nlohmann::json config_obj = AutomaticDinoHarvest::config["PermissionGroups"];
 	nlohmann::json perm_obj = config_obj[permission];
 	nlohmann::json command_obj = perm_obj["Commands"];
 	nlohmann::json setting_obj = command_obj[command];
@@ -272,18 +272,18 @@ TArray<FString> GetPlayerPermissions(FString eos_id)
 {
 	TArray<FString> PlayerPerms = { "Default" };
 
-	std::string escaped_eos_id = PluginTemplate::permissionsDB->escapeString(eos_id.ToString());
+	std::string escaped_eos_id = AutomaticDinoHarvest::permissionsDB->escapeString(eos_id.ToString());
 
-	std::string tablename = PluginTemplate::config["PermissionsDBSettings"].value("TableName", "Players");
+	std::string tablename = AutomaticDinoHarvest::config["PermissionsDBSettings"].value("TableName", "Players");
 
-	std::string condition = PluginTemplate::config["PermissionsDBSettings"].value("UniqueIDField", "EOS_Id");
+	std::string condition = AutomaticDinoHarvest::config["PermissionsDBSettings"].value("UniqueIDField", "EOS_Id");
 
 	std::string query = fmt::format("SELECT * FROM {} WHERE {}='{}';", tablename, condition, escaped_eos_id);
 
 	std::vector<std::map<std::string, std::string>> results;
-	if (!PluginTemplate::permissionsDB->read(query, results))
+	if (!AutomaticDinoHarvest::permissionsDB->read(query, results))
 	{
-		if (PluginTemplate::config["Debug"].value("Permissions", false) == true)
+		if (AutomaticDinoHarvest::config["Debug"].value("Permissions", false) == true)
 		{
 			Log::GetLog()->warn("Error reading permissions DB");
 		}
@@ -293,11 +293,11 @@ TArray<FString> GetPlayerPermissions(FString eos_id)
 
 	if (results.size() <= 0) return PlayerPerms;
 
-	std::string permsfield = PluginTemplate::config["PermissionsDBSettings"].value("PermissionGroupField","PermissionGroups");
+	std::string permsfield = AutomaticDinoHarvest::config["PermissionsDBSettings"].value("PermissionGroupField","PermissionGroups");
 
 	FString playerperms = FString(results[0].at(permsfield));
 
-	if (PluginTemplate::config["Debug"].value("Permissions", false) == true)
+	if (AutomaticDinoHarvest::config["Debug"].value("Permissions", false) == true)
 	{
 		Log::GetLog()->info("current player perms {}", playerperms.ToString());
 	}
@@ -311,7 +311,7 @@ FString GetPriorPermByEOSID(FString eos_id)
 {
 	TArray<FString> player_groups = GetPlayerPermissions(eos_id);
 
-	const nlohmann::json permGroups = PluginTemplate::config["PermissionGroups"];
+	const nlohmann::json permGroups = AutomaticDinoHarvest::config["PermissionGroups"];
 
 	std::string defaultGroup = "Default";
 	int minPriority = INT_MAX;
@@ -340,7 +340,7 @@ FString GetPriorPermByEOSID(FString eos_id)
 		result = {};
 	}
 
-	if (PluginTemplate::config["Debug"].value("Permissions", false) == true)
+	if (AutomaticDinoHarvest::config["Debug"].value("Permissions", false) == true)
 	{
 		Log::GetLog()->info("Selected Permission {}", selectedPerm.ToString());
 	}
@@ -356,17 +356,17 @@ bool AddPlayer(FString eosID, int playerID, FString playerName)
 		{"PlayerName", playerName.ToString()}
 	};
 
-	return PluginTemplate::pluginTemplateDB->create(PluginTemplate::config["PluginDBSettings"]["TableName"].get<std::string>(), data);
+	return AutomaticDinoHarvest::pluginTemplateDB->create(AutomaticDinoHarvest::config["PluginDBSettings"]["TableName"].get<std::string>(), data);
 }
 
 bool ReadPlayer(FString eosID)
 {
-	std::string escaped_id = PluginTemplate::pluginTemplateDB->escapeString(eosID.ToString());
+	std::string escaped_id = AutomaticDinoHarvest::pluginTemplateDB->escapeString(eosID.ToString());
 
-	std::string query = fmt::format("SELECT * FROM {} WHERE EosId='{}'", PluginTemplate::config["PluginDBSettings"]["TableName"].get<std::string>(), escaped_id);
+	std::string query = fmt::format("SELECT * FROM {} WHERE EosId='{}'", AutomaticDinoHarvest::config["PluginDBSettings"]["TableName"].get<std::string>(), escaped_id);
 
 	std::vector<std::map<std::string, std::string>> results;
-	PluginTemplate::pluginTemplateDB->read(query, results);
+	AutomaticDinoHarvest::pluginTemplateDB->read(query, results);
 
 	return results.size() <= 0 ? false : true;
 }
@@ -375,7 +375,7 @@ bool UpdatePlayer(FString eosID, FString playerName)
 {
 	std::string unique_id = "EosId";
 
-	std::string escaped_id = PluginTemplate::pluginTemplateDB->escapeString(eosID.ToString());
+	std::string escaped_id = AutomaticDinoHarvest::pluginTemplateDB->escapeString(eosID.ToString());
 
 	std::vector<std::pair<std::string, std::string>> data = {
 		{"PlayerName", playerName.ToString() + "123"}
@@ -383,16 +383,16 @@ bool UpdatePlayer(FString eosID, FString playerName)
 
 	std::string condition = fmt::format("{}='{}'", unique_id, escaped_id);
 
-	return PluginTemplate::pluginTemplateDB->update(PluginTemplate::config["PluginDBSettings"]["TableName"].get<std::string>(), data, condition);
+	return AutomaticDinoHarvest::pluginTemplateDB->update(AutomaticDinoHarvest::config["PluginDBSettings"]["TableName"].get<std::string>(), data, condition);
 }
 
 bool DeletePlayer(FString eosID)
 {
-	std::string escaped_id = PluginTemplate::pluginTemplateDB->escapeString(eosID.ToString());
+	std::string escaped_id = AutomaticDinoHarvest::pluginTemplateDB->escapeString(eosID.ToString());
 
 	std::string condition = fmt::format("EosId='{}'", escaped_id);
 
-	return PluginTemplate::pluginTemplateDB->deleteRow(PluginTemplate::config["PluginDBSettings"]["TableName"].get<std::string>(), condition);
+	return AutomaticDinoHarvest::pluginTemplateDB->deleteRow(AutomaticDinoHarvest::config["PluginDBSettings"]["TableName"].get<std::string>(), condition);
 }
 
 void ReadConfig()
@@ -405,13 +405,13 @@ void ReadConfig()
 		{
 			throw std::runtime_error("Can't open config file.");
 		}
-		file >> PluginTemplate::config;
+		file >> AutomaticDinoHarvest::config;
 
 		Log::GetLog()->info("{} config file loaded.", PROJECT_NAME);
 
-		PluginTemplate::isDebug = PluginTemplate::config["General"]["Debug"].get<bool>();
+		AutomaticDinoHarvest::isDebug = AutomaticDinoHarvest::config["General"]["Debug"].get<bool>();
 
-		Log::GetLog()->warn("Debug {}", PluginTemplate::isDebug);
+		Log::GetLog()->warn("Debug {}", AutomaticDinoHarvest::isDebug);
 
 	}
 	catch(const std::exception& error)
@@ -424,10 +424,10 @@ void ReadConfig()
 void LoadDatabase()
 {
 	Log::GetLog()->warn("LoadDatabase");
-	PluginTemplate::pluginTemplateDB = DatabaseFactory::createConnector(PluginTemplate::config["PluginDBSettings"]);
+	AutomaticDinoHarvest::pluginTemplateDB = DatabaseFactory::createConnector(AutomaticDinoHarvest::config["PluginDBSettings"]);
 
 	nlohmann::ordered_json tableDefinition = {};
-	if (PluginTemplate::config["PluginDBSettings"].value("UseMySQL", true) == true)
+	if (AutomaticDinoHarvest::config["PluginDBSettings"].value("UseMySQL", true) == true)
 	{
 		tableDefinition = {
 			{"Id", "INT NOT NULL AUTO_INCREMENT"},
@@ -450,19 +450,19 @@ void LoadDatabase()
 		};
 	}
 
-	PluginTemplate::pluginTemplateDB->createTableIfNotExist(PluginTemplate::config["PluginDBSettings"].value("TableName", ""), tableDefinition);
+	AutomaticDinoHarvest::pluginTemplateDB->createTableIfNotExist(AutomaticDinoHarvest::config["PluginDBSettings"].value("TableName", ""), tableDefinition);
 
 
 	// PermissionsDB
-	if (PluginTemplate::config["PermissionsDBSettings"].value("Enabled", true) == true)
+	if (AutomaticDinoHarvest::config["PermissionsDBSettings"].value("Enabled", true) == true)
 	{
-		PluginTemplate::permissionsDB = DatabaseFactory::createConnector(PluginTemplate::config["PermissionsDBSettings"]);
+		AutomaticDinoHarvest::permissionsDB = DatabaseFactory::createConnector(AutomaticDinoHarvest::config["PermissionsDBSettings"]);
 	}
 
 	// PointsDB (ArkShop)
-	if (PluginTemplate::config["PointsDBSettings"].value("Enabled", true) == true)
+	if (AutomaticDinoHarvest::config["PointsDBSettings"].value("Enabled", true) == true)
 	{
-		PluginTemplate::pointsDB = DatabaseFactory::createConnector(PluginTemplate::config["PointsDBSettings"]);
+		AutomaticDinoHarvest::pointsDB = DatabaseFactory::createConnector(AutomaticDinoHarvest::config["PointsDBSettings"]);
 	}
 	
 }

@@ -1,6 +1,6 @@
 #include "API/ARK/Ark.h"
 
-#include "PluginTemplate.h"
+#include "AutomaticDinoHarvest.h"
 
 #include "Utils.h"
 
@@ -21,7 +21,7 @@
 
 void OnServerReady()
 {
-	Log::GetLog()->info("PluginTemplate Initialized");
+	Log::GetLog()->info("AutomaticDinoHarvest Initialized");
 
 	ReadConfig();
 	LoadDatabase();

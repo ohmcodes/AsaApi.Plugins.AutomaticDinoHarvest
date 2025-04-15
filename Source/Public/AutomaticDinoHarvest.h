@@ -6,7 +6,7 @@
 
 #include "Requests.h"
 
-namespace PluginTemplate
+namespace AutomaticDinoHarvest
 {
 	inline nlohmann::json config;
 	inline bool isDebug{ false };

@@ -17,7 +17,7 @@
     <ClCompile Include="Includes\sqlite3\sqlite3.c" />
     <ClCompile Include="Source\Database\MySQLConnector.cpp" />
     <ClCompile Include="Source\Database\SQLiteConnector.cpp" />
-    <ClCompile Include="Source\PluginTemplate.cpp" />
+    <ClCompile Include="Source\AutomaticDinoHarvest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Includes\sqlite3\sqlite3.h" />
@@ -27,7 +27,7 @@
     <ClInclude Include="Source\Public\Database\IDatabaseConnector.h" />
     <ClInclude Include="Source\Public\Database\MySQLConnector.h" />
     <ClInclude Include="Source\Public\Database\SQLiteConnector.h" />
-    <ClInclude Include="Source\Public\PluginTemplate.h" />
+    <ClInclude Include="Source\Public\AutomaticDinoHarvest.h" />
     <ClInclude Include="Source\Reload.h" />
     <ClInclude Include="Source\RepairItems.h" />
     <ClInclude Include="Source\Timers.h" />
@@ -37,9 +37,9 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{f7095f8f-7bbd-40a5-b61d-b442c92a88b2}</ProjectGuid>
-    <RootNamespace>AsaApiPluginsTemplate</RootNamespace>
+    <RootNamespace>AsaApiPluginsAutomaticDinoHarvest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>PluginTemplate</ProjectName>
+    <ProjectName>AutomaticDinoHarvest</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -78,7 +78,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>PROJECT_NAME="$(ProjectName)";NDEBUG;ASAAPIPLUGINSTEMPLATE_EXPORTS;_WINDOWS;_USRDLL;_SILENCE_ALL_CXX20_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PROJECT_NAME="$(ProjectName)";NDEBUG;ASAAPIPLUGINSAUTOMATICDINOHARVEST_EXPORTS;_WINDOWS;_USRDLL;_SILENCE_ALL_CXX20_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
