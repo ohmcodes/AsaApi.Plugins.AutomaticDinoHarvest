@@ -96,7 +96,7 @@ int GetAttackIndex(FString* param, APrimalDinoCharacter* dino)
 	nlohmann::json listedDinos = AutomaticDinoHarvest::config["General"]["DinoAttackIndex"].get<nlohmann::json>();
 	//Log::GetLog()->info("{}", to_string(listedDinos));
 
-	if (listedDinos)
+	if (!listedDinos.is_null())
 	{
 		std::vector<int> attackIndexes;
 
