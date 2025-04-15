@@ -245,7 +245,16 @@ bool RemoveHarvesterByDino(APrimalDinoCharacter* dino, TArray<HarvesterData>& ha
 	return false;
 }
 
+void RemoveAllHarvestingDinosByTribeID(AShooterPlayerController* pc)
+{
+	TArray<HarvesterData>& harvester_list = GetHarvestingDino(pc);
 
+	harvester_list.RemoveAll([&](const HarvesterData& harvester)
+		{
+			return harvester.TribeID == pc->TargetingTeamField();
+		}
+	);
+}
 
 // Owner
 void AddHarvesterCallBack(AShooterPlayerController* pc, FString* param, int, int)
@@ -335,6 +344,8 @@ void AddHarvesterCallBack(AShooterPlayerController* pc, FString* param, int, int
 
 void RemoveHarvesterCallBack(AShooterPlayerController* pc, FString* param, int, int)
 {
+	Log::GetLog()->warn("Function: {}", __FUNCTION__);
+
 	AActor* actor = GetTargetActor(pc);
 
 	if (!actor) return;
@@ -354,24 +365,30 @@ void RemoveHarvesterCallBack(AShooterPlayerController* pc, FString* param, int, 
 
 }
 
-void StopAllHarvesterCallBack(AShooterPlayerController* player_controller, FString* param, int, int)
+void StopAllHarvesterCallBack(AShooterPlayerController* pc, FString* param, int, int)
 {
+	Log::GetLog()->warn("Function: {}", __FUNCTION__);
 
+	RemoveAllHarvestingDinosByTribeID(pc);
 }
 
-void GetAllHarvestingDinosCallBack(AShooterPlayerController* player_controller, FString* param, int, int)
+void GetAllHarvestingDinosCallBack(AShooterPlayerController* pc, FString* param, int, int)
 {
 
 }
 
 
 // Admin
-void AdminStopAllHarvestCallBack(AShooterPlayerController* player_controller, FString* param, int, int)
+void AdminStopAllHarvestCallBack(AShooterPlayerController* pc, FString* param, int, int)
 {
+	AutomaticDinoHarvest::tribeHarvestingDinos.Empty();
 
+	AutomaticDinoHarvest::personalHarvestingDinos.Empty();
+
+	AsaApi::GetApiUtils().SendNotification(pc, FColorList::Orange, 1.3f, 15.0f, nullptr, "All Harvesting dinos has been stoped.");
 }
 
-void AdminGetAllHarvestingDinosCallBack(AShooterPlayerController* player_controller, FString* param, int, int)
+void AdminGetAllHarvestingDinosCallBack(AShooterPlayerController* pc, FString* param, int, int)
 {
 
 }
